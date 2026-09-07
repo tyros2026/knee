@@ -225,8 +225,8 @@ div[data-testid="stMetricValue"] { color:var(--ink);font-family:'Space Grotesk';
 
 .footer-wrap { margin-top:3rem;padding:2.1rem 1.6rem;background:#102f4d;border-radius:24px;color:#dcebf7;display:grid;grid-template-columns:1.3fr 1.3fr .8fr 1fr;gap:2rem;align-items:center; }
 .footer-logo { font:700 1.3rem 'Space Grotesk';color:#fff; }
-.footer-brand small,.footer-wrap h4 { color:#91aec4;font-size:.72rem; }
-.footer-wrap h4 { margin:0 0 .6rem;text-transform:uppercase;letter-spacing:.08em; }
+.footer-brand small { color:#91aec4;font-size:.72rem; }
+.footer-wrap h4 { margin:0 0 .6rem;text-transform:uppercase;letter-spacing:.08em;color:#ff4d4d;font-size:.72rem; }
 .footer-contact div { font-size:.78rem;margin:.35rem 0; }
 .social-row { display:flex;gap:.5rem; }
 .social-row span { width:34px;height:34px;border-radius:10px;background:#193e5e;border:1px solid #2a5373;display:grid;place-items:center;font-weight:800;font-size:1.1rem;color:white; }
@@ -381,7 +381,6 @@ st.markdown(f"""
     <div class="orbit orbit-a"></div>
     <div class="orbit orbit-b"></div>
     <div class="scan-line"></div>
-    <div class="person-art">🚶</div>
     <div class="knee-pulse">●</div>
     <div class="visual-label">AI ANALYSIS<br><small>Detecting movement patterns...</small></div>
   </div>
