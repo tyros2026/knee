@@ -189,18 +189,45 @@ st.markdown(
         font-size: .78rem;
         padding: .8rem 0 0;
     }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
 
-st.markdown(
-    """
-    <div class="oa-hero">
-        <div class="oa-badge">NER • COMMUNITY SCREENING • PROTOTYPE</div>
-        <h1>🦵 OA Risk Screening</h1>
-        <p>AI-assisted, multimodal screening support for early osteoarthritis risk assessment.</p>
-    </div>
+    /* Contact / social section */
+    .contact-wrap {
+        margin-top: 3.5rem;
+        padding: 2rem 1.5rem;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #fff7f7, #ffffff);
+        border: 1px solid #f2d4d4;
+        text-align: center;
+        box-shadow: 0 10px 28px rgba(180, 30, 30, .08);
+    }
+    .contact-wrap h2, .contact-wrap h3 {
+        color: #c62828 !important;
+    }
+    .contact-info {
+        color: #5f3b3b;
+        line-height: 1.8;
+        margin: .7rem 0 1.2rem;
+    }
+    .social-row {
+        display: flex;
+        justify-content: center;
+        gap: .8rem;
+        margin-top: .6rem;
+    }
+    .social-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: #c62828;
+        color: white;
+        font-weight: 800;
+        font-size: 1.15rem;
+        box-shadow: 0 5px 14px rgba(198,40,40,.18);
+    }
+    </style>
     """,
     unsafe_allow_html=True,
 )
@@ -226,7 +253,7 @@ LABELS = {
         "section4": "4. Risk assessment",
         "ui": {
             "language": "Language / ভাষা / भाषा", "records": "🗂️ Patient record history",
-            "no_records": "No records saved yet.", "download": t("download", "Download all records (CSV)"),
+            "no_records": "No records saved yet.", "download": "Download all records (CSV)",
             "offline": "Offline-first wearable workflow. IMU logs can be captured locally and synced to this app later at a PHC.",
             "patient_profile": "Patient profile", "patient_help": "Enter basic clinical and occupational details",
             "patient_name": "Patient name", "age": "Age", "height": "Height (cm)", "weight": "Weight (kg)",
@@ -235,13 +262,13 @@ LABELS = {
             "family_history": "Family history of OA / joint disease", "computer_vision": "Computer vision",
             "camera_title": "Camera-based gait analysis", "camera_help": "Use a 5–15 second side-on, full-body walking video.",
             "camera_upload": "Upload a short (5-15s) side-on, full-body walking video (e.g. filmed walking across a room or corridor).",
-            "upload_video": "Upload video", "run_camera": "Run camera gait analysis", "camera_processing": t("camera_processing", "Running pose estimation on video..."),
+            "upload_video": "Upload video", "run_camera": "Run camera gait analysis", "camera_processing": "Running pose estimation on video...",
             "camera_done": "Camera gait analysis complete.", "camera_failed": "Gait analysis failed", "camera_features": "Extracted camera gait features:",
             "left_knee": "Left knee flexion range", "right_knee": "Right knee flexion range", "asymmetry": "Asymmetry index",
             "cadence_proxy": "Cadence proxy", "pose_detected": "Pose detected in", "clear_camera": "Clear camera gait data",
             "wearable": "Wearable sensing", "imu_title": "ESP32 + MPU6050 gait analysis",
             "imu_help": "Upload the recorded IMU CSV for sensor-based gait features.", "imu_upload_help": "Upload the CSV log from the ESP32 + MPU6050 wearable sensor. Columns: timestamp_ms,leg,ax,ay,az,gx,gy,gz",
-            "upload_imu": "Upload IMU CSV", "run_imu": "Run IMU gait analysis", "imu_processing": t("imu_processing", "Processing IMU trace..."),
+            "upload_imu": "Upload IMU CSV", "run_imu": "Run IMU gait analysis", "imu_processing": "Processing IMU trace...",
             "imu_done": "IMU gait analysis complete.", "imu_failed": "IMU analysis failed", "imu_features": "Extracted IMU gait features:",
             "peak_velocity": "Peak angular velocity", "jerk": "Jerk (RMS)", "lr_asymmetry": "L/R asymmetry",
             "cadence_imu": "Cadence (IMU)", "samples": "Samples", "clear_imu": "Clear IMU data",
@@ -309,9 +336,22 @@ LABELS = {
     },
 }
 
-with st.sidebar:
-    language = st.selectbox(t("language", "Language / ভাষা / भाषा"), list(LABELS.keys()))
+language = st.selectbox("Language / ভাষা / भाषा", list(LABELS.keys()))
+L = LABELS[language]
+UI = L.get("ui", {})
 
+def t(key, default):
+    return UI.get(key, default)
+
+st.markdown(f"""
+<div class="oa-hero">
+    <div class="oa-badge">NER • COMMUNITY SCREENING • PROTOTYPE</div>
+    <h1>{L["title"]}</h1>
+    <p>{L["subtitle"]}</p>
+</div>
+""", unsafe_allow_html=True)
+
+with st.sidebar:
     st.divider()
     st.subheader(t("records", "🗂️ Patient record history"))
     records_df = load_patient_records()
@@ -330,26 +370,9 @@ with st.sidebar:
             file_name="patient_records.csv",
             mime="text/csv",
         )
-
     st.divider()
     st.caption(t("offline", "Offline-first wearable workflow. IMU logs can be captured locally and synced to this app later at a PHC."))
 
-L = LABELS[language]
-UI = L.get("ui", {})
-
-def t(key, default):
-    return UI.get(key, default)
-
-
-st.title(L["title"])
-st.caption(L["subtitle"])
-
-if "gait_features" not in st.session_state:
-    st.session_state.gait_features = None
-if "imu_features" not in st.session_state:
-    st.session_state.imu_features = None
-
-col_left, col_right = st.columns([1, 1])
 
 # ----------------------------------------------------------------------
 # LEFT COLUMN — Patient / worker inputs + both sensing modalities
