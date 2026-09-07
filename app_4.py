@@ -348,7 +348,7 @@ if "imu_features" not in st.session_state:
 # ----------------------------------------------------------------------
 # HERO
 # ----------------------------------------------------------------------
-st.markdown("""
+st.markdown(f"""
 <div class="top-nav">
   <div class="nav-logo"><span>🌿</span> Tyros</div>
   <div class="nav-links">
@@ -364,13 +364,9 @@ st.markdown("""
 <section class="hero-section" id="overview">
   <div class="hero-copy">
     <div class="eyebrow">✦ AI FOR A HEALTHIER NORTHEAST</div>
-    <h1>OA <span>Risk Screening</span></h1>
+    <h1>{L["title"]}</h1>
     <h3>Early Detection. Stronger Generations.</h3>
-    <p>
-      AI-assisted multimodal screening that combines clinical information,
-      camera-based gait analysis and wearable IMU signals to flag candidates
-      for timely PHC-level follow-up.
-    </p>
+    <p>{L["subtitle"]}</p>
     <div class="hero-actions">
       <a class="primary-link" href="#screening">Get Started →</a>
       <a class="secondary-link" href="#how-it-works">▶ Learn More</a>
@@ -446,7 +442,7 @@ st.markdown("""
 </section>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="glass-section reveal"><div class="section-title">👤 Patient Details <small>Let’s start with some basic information</small></div>', unsafe_allow_html=True)
+st.markdown(f'<div class="glass-section reveal"><div class="section-title">👤 {L["section1"]} <small>Let’s start with some basic information</small></div>', unsafe_allow_html=True)
 
 p1, p2, p3 = st.columns([1.6, .8, .9])
 with p1:
@@ -495,7 +491,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 vcol, icol = st.columns(2)
 
 with vcol:
-    st.markdown('<div class="glass-section sensor-card reveal"><div class="section-title">📷 Camera Gait Analysis <small>AI pose estimation</small></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="glass-section sensor-card reveal"><div class="section-title">📷 {L["section2"]} <small>AI pose estimation</small></div>', unsafe_allow_html=True)
     st.caption("Upload a 5–15 second side-on, full-body walking video.")
     video_file = st.file_uploader(
         "Upload walking video",
@@ -546,7 +542,7 @@ with vcol:
     st.markdown('</div>', unsafe_allow_html=True)
 
 with icol:
-    st.markdown('<div class="glass-section sensor-card reveal"><div class="section-title">📡 Wearable IMU Analysis <small>ESP32 + MPU6050</small></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="glass-section sensor-card reveal"><div class="section-title">📡 {L["section3"]} <small>ESP32 + MPU6050</small></div>', unsafe_allow_html=True)
     st.caption("Upload the recorded IMU CSV for sensor-based gait features.")
     imu_file = st.file_uploader(
         "Upload IMU data (CSV)",
@@ -629,10 +625,10 @@ band_meta = {
 risk_color, risk_title, risk_text, risk_icon = band_meta[result.band]
 
 st.markdown('<div id="results"></div>', unsafe_allow_html=True)
-st.markdown("""
+st.markdown(f"""
 <div class="section-heading left results-heading">
   <div class="eyebrow">AI SCREENING OUTPUT</div>
-  <h2>Risk Assessment</h2>
+  <h2>{L["section4"]}</h2>
   <p>Your multimodal screening result is shown below.</p>
 </div>
 """, unsafe_allow_html=True)
