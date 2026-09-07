@@ -767,7 +767,7 @@ st.markdown("""
     <small>AI for a Healthier Northeast</small>
   </div>
   <div class="footer-contact">
-    <h4>Contact Us</h4>
+    <h4 style="color:red;">Contact Us</h4>
     <div>✉️ tyros2026@gmail.com</div>
     <div>☎️ 7979824251</div>
     <div>📍 GEC Vaishali</div>
