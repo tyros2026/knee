@@ -336,7 +336,7 @@ LABELS = {
     },
 }
 
-language = st.selectbox("Language / ভাষা / भाषा", list(LABELS.keys()))
+language = st.selectbox("Language / भाषा / ভাষা", list(LABELS.keys()))
 L = LABELS[language]
 UI = L.get("ui", {})
 
@@ -373,6 +373,14 @@ with st.sidebar:
     st.divider()
     st.caption(t("offline", "Offline-first wearable workflow. IMU logs can be captured locally and synced to this app later at a PHC."))
 
+
+# ----------------------------------------------------------------------
+# LEFT / RIGHT COLUMNS
+# ----------------------------------------------------------------------
+# Create these BEFORE using `with col_left:` / `with col_right:`.
+# This was accidentally omitted in the previous UI update and caused
+# Streamlit to raise: NameError: name 'col_left' is not defined.
+col_left, col_right = st.columns([1, 1])
 
 # ----------------------------------------------------------------------
 # LEFT COLUMN — Patient / worker inputs + both sensing modalities
