@@ -46,170 +46,220 @@ def load_patient_records() -> pd.DataFrame:
     return pd.DataFrame()
 
 st.set_page_config(
-    page_title="OA Risk Screening — NER Prototype",
+    page_title="OA Risk Screening — Tyros",
     page_icon="🦵",
     layout="wide",
-)
-
-# ----------------------------------------------------------------------
-# UI styling — presentation only; screening logic and data flow are unchanged.
-# ----------------------------------------------------------------------
-st.markdown(
-    """
-    <style>
-    /* App background and typography */
-    .stApp {
-        background: linear-gradient(180deg, #f7fafc 0%, #eef5f3 100%);
-    }
-    .block-container {
-        max-width: 1450px;
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-    }
-
-    /* Sidebar */
-    section[data-testid="stSidebar"] {
-        background: #ffffff;
-        border-right: 1px solid #e2e8f0;
-    }
-    section[data-testid="stSidebar"] .block-container {
-        padding-top: 1.5rem;
-    }
-
-    /* Main hero */
-    .oa-hero {
-        background: linear-gradient(135deg, #0f766e 0%, #115e59 55%, #134e4a 100%);
-        padding: 1.6rem 1.8rem;
-        border-radius: 22px;
-        margin-bottom: 1.25rem;
-        box-shadow: 0 12px 30px rgba(15, 118, 110, 0.16);
-    }
-    .oa-hero h1 {
-        color: white !important;
-        margin: 0 0 .35rem 0;
-        font-size: 2rem;
-        letter-spacing: -0.02em;
-    }
-    .oa-hero p {
-        color: rgba(255,255,255,.88);
-        margin: 0;
-        font-size: .98rem;
-    }
-    .oa-badge {
-        display: inline-block;
-        padding: .28rem .65rem;
-        border-radius: 999px;
-        background: rgba(255,255,255,.14);
-        border: 1px solid rgba(255,255,255,.22);
-        color: white;
-        font-size: .78rem;
-        font-weight: 700;
-        margin-bottom: .7rem;
-    }
-
-    /* Section labels */
-    div[data-testid="stVerticalBlock"] h2,
-    div[data-testid="stVerticalBlock"] h3 {
-        color: #123b3a;
-    }
-
-    /* Inputs / uploaders */
-    div[data-baseweb="input"] > div,
-    div[data-baseweb="select"] > div {
-        border-radius: 10px;
-        border-color: #d7e2e0;
-        background: #fff;
-    }
-    div[data-testid="stFileUploaderDropzone"] {
-        border: 1.5px dashed #9bbab5;
-        border-radius: 14px;
-        background: #fbfefd;
-    }
-
-    /* Buttons */
-    .stButton > button,
-    .stDownloadButton > button {
-        border-radius: 10px;
-        font-weight: 650;
-        min-height: 2.55rem;
-        transition: transform .12s ease, box-shadow .12s ease;
-    }
-    .stButton > button:hover,
-    .stDownloadButton > button:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 16px rgba(15, 118, 110, .12);
-    }
-
-    /* Metrics */
-    div[data-testid="stMetric"] {
-        background: #ffffff;
-        border: 1px solid #e1ebe9;
-        border-radius: 14px;
-        padding: .75rem .9rem;
-        box-shadow: 0 5px 16px rgba(15, 23, 42, .04);
-    }
-    div[data-testid="stMetricLabel"] {
-        color: #5b6b69;
-    }
-
-    /* Alerts / notices */
-    div[data-testid="stAlert"] {
-        border-radius: 12px;
-    }
-
-    /* Dataframe */
-    div[data-testid="stDataFrame"] {
-        border-radius: 12px;
-        overflow: hidden;
-    }
-
-    /* Small helper cards */
-    .ui-card {
-        background: rgba(255,255,255,.82);
-        border: 1px solid #dfeae8;
-        border-radius: 16px;
-        padding: .85rem 1rem;
-        margin: .35rem 0 .8rem 0;
-        color: #36504d;
-    }
-    .ui-card strong { color: #123b3a; }
-    .ui-kicker {
-        font-size: .75rem;
-        text-transform: uppercase;
-        letter-spacing: .08em;
-        font-weight: 800;
-        color: #0f766e;
-        margin-bottom: .2rem;
-    }
-
-    /* Footer */
-    .oa-footer {
-        text-align: center;
-        color: #6b7c79;
-        font-size: .78rem;
-        padding: .8rem 0 0;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
+    initial_sidebar_state="expanded",
 )
 
 st.markdown(
     """
-    <div class="oa-hero">
-        <div class="oa-badge">NER • COMMUNITY SCREENING • PROTOTYPE</div>
-        <h1>🦵 OA Risk Screening</h1>
-        <p>AI-assisted, multimodal screening support for early osteoarthritis risk assessment.</p>
-    </div>
-    """,
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root {
+  --ink:#12365a;
+  --blue:#147be8;
+  --blue2:#54a7ff;
+  --green:#1f9d78;
+  --purple:#8064d9;
+  --bg:#f5f9ff;
+  --card:rgba(255,255,255,.86);
+  --line:#dce9f6;
+}
+
+html { scroll-behavior:smooth; }
+.stApp {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(86,167,255,.15), transparent 28%),
+    radial-gradient(circle at 90% 30%, rgba(71,192,154,.10), transparent 25%),
+    linear-gradient(180deg,#f7fbff 0%,#edf6ff 50%,#f8fbff 100%);
+  color:var(--ink);
+  font-family:'DM Sans',sans-serif;
+}
+.block-container { max-width:1320px; padding:1rem 2rem 3rem; }
+h1,h2,h3,h4 { font-family:'Space Grotesk',sans-serif !important; color:var(--ink)!important; }
+h2 { font-size:2rem!important; letter-spacing:-.04em; }
+p { color:#60758d; }
+
+section[data-testid="stSidebar"] {
+  background:rgba(255,255,255,.94);
+  border-right:1px solid var(--line);
+}
+section[data-testid="stSidebar"] .block-container { padding:1.3rem 1rem; }
+
+.side-brand { display:flex; gap:.65rem; align-items:center; padding:.4rem .2rem 1rem; }
+.brand-mark { width:42px;height:42px;border-radius:14px;background:#e4f7ee;display:grid;place-items:center;font-size:23px; }
+.side-brand b { display:block;font-size:1.25rem;color:var(--ink);font-family:'Space Grotesk'; }
+.side-brand small { color:#7590a6; }
+
+.top-nav {
+  position:sticky; top:.4rem; z-index:50;
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  padding:.65rem .9rem; margin-bottom:1rem;
+  background:rgba(255,255,255,.78); backdrop-filter:blur(18px);
+  border:1px solid rgba(205,224,241,.9); border-radius:18px;
+  box-shadow:0 8px 28px rgba(26,72,112,.06);
+}
+.nav-logo { font-family:'Space Grotesk';font-size:1.15rem;font-weight:700;color:var(--ink);white-space:nowrap; }
+.nav-logo span { margin-right:.25rem; }
+.nav-links { display:flex; gap:1.3rem; }
+.nav-links a { text-decoration:none;color:#58718a;font-size:.86rem;font-weight:600; }
+.nav-links a:hover { color:var(--blue); }
+.nav-cta,.primary-link {
+  text-decoration:none; color:white!important; background:linear-gradient(135deg,#1179e8,#1266c4);
+  border-radius:12px; padding:.62rem 1rem; font-weight:700; box-shadow:0 8px 18px rgba(20,123,232,.18);
+}
+.secondary-link { text-decoration:none;color:var(--ink)!important;background:#fff;border:1px solid var(--line);border-radius:12px;padding:.62rem 1rem;font-weight:700; }
+
+.hero-section {
+  min-height:510px; display:grid; grid-template-columns:1.02fr .98fr; overflow:hidden;
+  border-radius:30px; border:1px solid #d8e8f7;
+  background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(225,241,255,.86));
+  box-shadow:0 22px 60px rgba(39,92,139,.12); position:relative;
+}
+.hero-section:before { content:"";position:absolute;inset:auto auto -100px -80px;width:320px;height:320px;border-radius:50%;background:rgba(60,166,255,.12);filter:blur(2px); }
+.hero-copy { padding:5rem 2.8rem 3rem; position:relative;z-index:2; }
+.eyebrow { display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.12em;color:#1778d7;background:#eaf5ff;padding:.38rem .65rem;border-radius:999px;margin-bottom:.8rem; }
+.hero-copy h1 { font-size:4.2rem!important; line-height:.95;margin:.15rem 0 .75rem; }
+.hero-copy h1 span { color:#1979df; }
+.hero-copy h3 { font-size:1.28rem!important;margin:.2rem 0 1rem;color:#1e5685!important; }
+.hero-copy p { max-width:600px;font-size:1rem;line-height:1.7; }
+.hero-actions { display:flex;gap:.7rem;margin:1.5rem 0; }
+.hero-pills { display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-top:1.7rem; }
+.hero-pills div { background:rgba(255,255,255,.72);border:1px solid #dceafa;border-radius:14px;padding:.7rem;font-size:.85rem; }
+.hero-pills b,.hero-pills small { display:block;margin-left:1.5rem; }
+.hero-pills small { color:#7890a6;font-size:.72rem; }
+.hero-visual { position:relative;min-height:510px;overflow:hidden;background:linear-gradient(145deg,#e9f7ff,#cbe7ff 48%,#eefcf8); }
+.hero-visual:after { content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(230,245,255,.7),transparent 38%); }
+.person-art { position:absolute;right:22%;bottom:14%;font-size:10rem;filter:drop-shadow(0 20px 25px rgba(21,74,110,.18));animation:float 3.8s ease-in-out infinite;z-index:2; }
+.knee-pulse { position:absolute;right:41%;bottom:40%;font-size:2rem;color:#ff5964;text-shadow:0 0 24px #ff7b84;animation:pulse 1.4s ease-in-out infinite;z-index:3; }
+.orbit { position:absolute;border:1px solid rgba(21,126,223,.35);border-radius:50%;z-index:1; }
+.orbit-a { width:310px;height:310px;right:10%;top:10%;animation:spin 16s linear infinite; }
+.orbit-b { width:220px;height:220px;right:19%;top:20%;border-style:dashed;animation:spin 10s linear reverse infinite; }
+.scan-line { position:absolute;left:18%;right:10%;height:2px;top:20%;background:#57a9ff;box-shadow:0 0 18px #57a9ff;z-index:4;animation:scan 3.6s ease-in-out infinite; }
+.visual-label { position:absolute;right:7%;bottom:9%;background:rgba(255,255,255,.86);border:1px solid #d8e8f7;border-radius:15px;padding:.75rem 1rem;font-weight:800;color:#21567f;z-index:5;box-shadow:0 12px 25px rgba(30,85,125,.10); }
+.visual-label small { font-weight:500;color:#7891a7; }
+
+.overview-section,.how-section { padding:5rem .5rem 2rem; }
+.section-heading { text-align:center;margin-bottom:2rem; }
+.section-heading.left { text-align:left;margin-top:3.5rem; }
+.section-heading h2 { margin:.2rem 0 .35rem; }
+.section-heading p { margin:0; }
+.feature-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:1rem; }
+.feature-card,.glass-section,.risk-dashboard {
+  background:var(--card); border:1px solid var(--line); border-radius:20px;
+  box-shadow:0 14px 38px rgba(40,91,132,.07); backdrop-filter:blur(12px);
+}
+.feature-card { padding:1.25rem;min-height:165px;transition:.25s ease; }
+.feature-card:hover { transform:translateY(-5px);box-shadow:0 20px 45px rgba(30,101,159,.12); }
+.feature-card h3 { font-size:1.05rem!important;margin:.8rem 0 .35rem; }
+.feature-card p { font-size:.84rem;line-height:1.55; }
+.feature-icon { width:43px;height:43px;border-radius:13px;display:grid;place-items:center;font-size:1.2rem;font-weight:800; }
+.blue{background:#e6f3ff;color:#1677dc}.green{background:#e5f8f0;color:#16966f}.purple{background:#eeeaff;color:#775bd0}.teal{background:#e2f8f8;color:#178d91}
+
+.workflow { display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:center;gap:.7rem;background:rgba(255,255,255,.6);border:1px solid var(--line);padding:1.7rem;border-radius:24px; }
+.workflow-item { text-align:center; }
+.workflow-circle { width:58px;height:58px;border-radius:50%;background:#e8f4ff;border:1px solid #d4e8fa;display:grid;place-items:center;margin:0 auto .65rem;font-size:1.4rem; }
+.workflow-item b,.workflow-item span { display:block; }
+.workflow-item span { font-size:.72rem;color:#7b91a6;margin-top:.2rem; }
+.workflow-arrow { font-size:1.8rem;color:#197be0; }
+
+.glass-section { padding:1.35rem;margin-bottom:1rem; }
+.section-title { font-family:'Space Grotesk';font-weight:700;font-size:1.15rem;color:var(--ink);margin-bottom:1rem; }
+.section-title small { display:block;font-family:'DM Sans';font-weight:500;color:#8195a8;font-size:.76rem;margin-top:.2rem; }
+.sensor-card { min-height:410px; }
+div[data-baseweb="input"]>div,div[data-baseweb="select"]>div,div[data-baseweb="textarea"]>div {
+  border-radius:11px!important;border-color:#d9e7f3!important;background:rgba(255,255,255,.8)!important;
+}
+div[data-testid="stFileUploaderDropzone"] { border:1.5px dashed #a8c9e6!important;border-radius:15px!important;background:#fafdff!important; }
+.stButton>button,.stDownloadButton>button { border-radius:11px!important;font-weight:700!important;min-height:2.65rem;transition:.2s ease!important; }
+.stButton>button:hover,.stDownloadButton>button:hover { transform:translateY(-2px);box-shadow:0 8px 20px rgba(20,123,232,.16); }
+div[data-testid="stMetric"] { background:rgba(248,252,255,.9);border:1px solid #e1edf7;border-radius:13px;padding:.65rem .75rem; }
+div[data-testid="stMetricValue"] { color:var(--ink);font-family:'Space Grotesk'; }
+.mini-result { margin-top:1rem;padding:1rem;background:#f7fbff;border:1px solid #e1edf7;border-radius:15px; }
+.signal-box { margin-top:.7rem;padding:.65rem .8rem;border-radius:12px;background:#eef8ff; }
+.signal-head { display:flex;justify-content:space-between;font-size:.72rem;color:#52728e; }
+.signal-head span { color:#16a16e; }
+.signal-wave { color:#2c91ed;font-size:1.25rem;letter-spacing:.08rem;overflow:hidden;white-space:nowrap;animation:wave 2.2s linear infinite; }
+.imu-visual { display:flex;align-items:center;gap:1rem;padding:1.3rem;margin:.7rem 0;background:linear-gradient(135deg,#eff9ff,#eefbf6);border-radius:16px;border:1px solid #dcecf6; }
+.imu-chip { padding:.7rem .9rem;border-radius:12px;background:#173e63;color:white;font-weight:800;font-size:.78rem; }
+.imu-signal { flex:1;display:flex;gap:.3rem;align-items:center;justify-content:center; }
+.imu-signal span { font-size:1.4rem;color:#238be6;animation:bob 1s ease-in-out infinite alternate; }
+.imu-signal span:nth-child(2n) { color:#24a77b;animation-delay:.2s; }
+.imu-visual small { color:#71889e; }
+
+.results-heading { margin-bottom:1.1rem; }
+.risk-dashboard { display:grid;grid-template-columns:.85fr 1.15fr 1fr;gap:1rem;padding:1.3rem;margin-bottom:1rem; }
+.risk-main { text-align:center;padding:1rem;border-right:1px solid #e2edf6; }
+.risk-gauge { width:190px;height:190px;border-radius:50%;margin:0 auto 1rem;background:conic-gradient(var(--risk) var(--score),#e2eaf2 0);display:grid;place-items:center;position:relative; }
+.risk-gauge:before { content:"";position:absolute;inset:12px;border-radius:50%;background:white; }
+.gauge-inner { position:relative;z-index:1;text-align:center; }
+.gauge-inner strong { display:block;font:700 3.2rem/1 'Space Grotesk';color:var(--ink); }
+.gauge-inner span { color:#8294a5;font-size:.8rem; }
+.risk-label { font:700 1.25rem 'Space Grotesk';margin-bottom:.45rem; }
+.risk-main p { font-size:.82rem;line-height:1.55;max-width:270px;margin:auto; }
+.factor-panel,.recommend-panel { padding:.6rem .8rem; }
+.factor-panel h3,.recommend-panel h3 { font-size:1rem!important;margin:.2rem 0 1rem; }
+.factor-row { margin:.85rem 0; }
+.factor-row>div:first-child { display:flex;justify-content:space-between;font-size:.8rem;color:#58718a; }
+.factor-row b { color:var(--ink); }
+.factor-track { height:8px;background:#e9f0f6;border-radius:99px;overflow:hidden;margin-top:.35rem; }
+.factor-track i { display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#2587e8,#69b3ff); }
+.recommend-panel { background:#effaf5;border-radius:16px;border:1px solid #d7eee3; }
+.recommend-item { padding:.55rem 0;border-bottom:1px solid rgba(32,137,97,.1);font-size:.82rem;color:#2f705c; }
+.recommend-item:last-child { border-bottom:0; }
+.prototype-note { padding:1rem 1.1rem;border-radius:14px;background:#fff9e9;border:1px solid #f5e2aa;color:#7d6630;font-size:.78rem;line-height:1.55; }
+
+.journey-banner { margin:3.5rem 0 1.5rem;padding:2.2rem 1.3rem;border-radius:25px;border:1px solid #cfe4f6;background:linear-gradient(120deg,#edf8ff,#f2fbf7);text-align:center;overflow:hidden;position:relative; }
+.journey-banner:before { content:"";position:absolute;width:380px;height:180px;left:-100px;bottom:-120px;background:#cde8ff;border-radius:50%; }
+.journey-title { font:700 1.45rem 'Space Grotesk';color:var(--ink); }
+.journey-sub { color:#718ba1;font-size:.8rem;margin:.2rem 0 1.5rem; }
+.journey-row { display:flex;justify-content:center;align-items:center;gap:1.2rem;position:relative;z-index:2; }
+.journey-row div { min-width:125px; }
+.journey-row span { width:48px;height:48px;border-radius:50%;display:grid;place-items:center;margin:0 auto .45rem;background:#fff;border:1px solid #d8e9f6;font-size:1.2rem; }
+.journey-row b,.journey-row small { display:block; }
+.journey-row b { font-size:.78rem; }
+.journey-row small { color:#8297a9;font-size:.66rem; }
+.journey-row i { font-style:normal;font-size:1.5rem;color:#2086e4; }
+
+.footer-wrap { margin-top:3rem;padding:2.1rem 1.6rem;background:#102f4d;border-radius:24px;color:#dcebf7;display:grid;grid-template-columns:1.3fr 1.3fr .8fr 1fr;gap:2rem;align-items:center; }
+.footer-logo { font:700 1.3rem 'Space Grotesk';color:#fff; }
+.footer-brand small,.footer-wrap h4 { color:#91aec4;font-size:.72rem; }
+.footer-wrap h4 { margin:0 0 .6rem;text-transform:uppercase;letter-spacing:.08em; }
+.footer-contact div { font-size:.78rem;margin:.35rem 0; }
+.social-row { display:flex;gap:.5rem; }
+.social-row span { width:34px;height:34px;border-radius:10px;background:#193e5e;border:1px solid #2a5373;display:grid;place-items:center;font-weight:800;font-size:1.1rem;color:white; }
+.footer-tag { text-align:right;color:#a9c0d1;font-size:.76rem;line-height:1.5; }
+.copyright { text-align:center;color:#8ca1b2;font-size:.7rem;padding:1rem 0 .2rem; }
+
+.reveal { animation:fadeUp .75s ease both; }
+.feature-card:nth-child(2),.workflow-item:nth-child(3) { animation-delay:.08s; }
+.feature-card:nth-child(3),.workflow-item:nth-child(5) { animation-delay:.16s; }
+.feature-card:nth-child(4),.workflow-item:nth-child(7) { animation-delay:.24s; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+@keyframes pulse { 0%,100%{transform:scale(.8);opacity:.55} 50%{transform:scale(1.5);opacity:1} }
+@keyframes spin { to{transform:rotate(360deg)} }
+@keyframes scan { 0%,100%{top:18%;opacity:.25} 50%{top:75%;opacity:1} }
+@keyframes wave { from{transform:translateX(0)} to{transform:translateX(-25px)} }
+@keyframes bob { from{transform:translateY(-3px)} to{transform:translateY(3px)} }
+
+@media(max-width:950px){
+  .nav-links{display:none}.hero-section{grid-template-columns:1fr}.hero-visual{min-height:360px}.hero-copy{padding:3rem 1.5rem}.hero-copy h1{font-size:3.2rem!important}.feature-grid{grid-template-columns:repeat(2,1fr)}.risk-dashboard{grid-template-columns:1fr}.risk-main{border-right:0;border-bottom:1px solid #e2edf6;padding-bottom:1.5rem}.journey-row{flex-wrap:wrap}.footer-wrap{grid-template-columns:1fr 1fr}.footer-tag{text-align:left}
+}
+@media(max-width:600px){
+  .block-container{padding:.5rem .75rem 2rem}.top-nav{position:relative}.hero-pills{grid-template-columns:1fr}.feature-grid{grid-template-columns:1fr}.workflow{grid-template-columns:1fr}.workflow-arrow{transform:rotate(90deg)}.footer-wrap{grid-template-columns:1fr}.hero-visual{min-height:300px}.person-art{font-size:7rem}
+}
+</style>
+""",
     unsafe_allow_html=True,
 )
 
 # ----------------------------------------------------------------------
-# Minimal multilingual label set (PS requirement: "multilingual and
-# easy-to-use interfaces suitable for rural healthcare settings in NER").
-# v1 covers English + Assamese + Hindi as a demonstration of the pattern;
-# the same dict structure extends to Bodo, Khasi, Mizo, Manipuri, etc.
+# Existing multilingual labels are retained below; all scoring and analysis
+# functions remain unchanged.
 # ----------------------------------------------------------------------
 LABELS = {
     "English": {
@@ -252,11 +302,19 @@ LABELS = {
     },
 }
 
+
 with st.sidebar:
+    st.markdown("""
+    <div class="side-brand">
+        <div class="brand-mark">🌿</div>
+        <div><b>Tyros</b><small>AI for a Healthier Northeast</small></div>
+    </div>
+    """, unsafe_allow_html=True)
+
     language = st.selectbox("Language / ভাষা / भाषा", list(LABELS.keys()))
 
-    st.divider()
-    st.subheader("🗂️ Patient record history")
+    st.markdown("---")
+    st.markdown("### 🗂️ Saved records")
     records_df = load_patient_records()
     if records_df.empty:
         st.caption("No records saved yet.")
@@ -268,46 +326,142 @@ with st.sidebar:
         )
         csv_bytes = records_df.to_csv(index=False).encode("utf-8")
         st.download_button(
-            "Download all records (CSV)",
+            "⬇️ Download records (CSV)",
             data=csv_bytes,
             file_name="patient_records.csv",
             mime="text/csv",
         )
 
-    st.divider()
+    st.markdown("---")
     st.caption(
-        "**Offline-first note:** the wearable IMU logs to onboard flash "
-        "even with zero connectivity in the field. Sync the CSV to this "
-        "app whenever you're back at a PHC or have a laptop connection — "
-        "see `tools/log_serial_to_csv.py --dump`."
+        "Offline-first wearable workflow. IMU logs can be captured locally "
+        "and synced to this app later at a PHC."
     )
 
 L = LABELS[language]
-
-st.title(L["title"])
-st.caption(L["subtitle"])
 
 if "gait_features" not in st.session_state:
     st.session_state.gait_features = None
 if "imu_features" not in st.session_state:
     st.session_state.imu_features = None
 
-col_left, col_right = st.columns([1, 1])
+# ----------------------------------------------------------------------
+# HERO
+# ----------------------------------------------------------------------
+st.markdown("""
+<div class="top-nav">
+  <div class="nav-logo"><span>🌿</span> Tyros</div>
+  <div class="nav-links">
+    <a href="#overview">Home</a>
+    <a href="#how-it-works">How it works</a>
+    <a href="#screening">Screening</a>
+    <a href="#results">Results</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <a class="nav-cta" href="#screening">Start Screening →</a>
+</div>
+
+<section class="hero-section" id="overview">
+  <div class="hero-copy">
+    <div class="eyebrow">✦ AI FOR A HEALTHIER NORTHEAST</div>
+    <h1>OA <span>Risk Screening</span></h1>
+    <h3>Early Detection. Stronger Generations.</h3>
+    <p>
+      AI-assisted multimodal screening that combines clinical information,
+      camera-based gait analysis and wearable IMU signals to flag candidates
+      for timely PHC-level follow-up.
+    </p>
+    <div class="hero-actions">
+      <a class="primary-link" href="#screening">Get Started →</a>
+      <a class="secondary-link" href="#how-it-works">▶ Learn More</a>
+    </div>
+    <div class="hero-pills">
+      <div>🧠 <b>AI Powered</b><small>Computer vision</small></div>
+      <div>📡 <b>Wearable IMU</b><small>Motion signals</small></div>
+      <div>📊 <b>Multimodal</b><small>Clinical + gait + IMU</small></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="orbit orbit-a"></div>
+    <div class="orbit orbit-b"></div>
+    <div class="scan-line"></div>
+    <div class="person-art">🚶</div>
+    <div class="knee-pulse">●</div>
+    <div class="visual-label">AI ANALYSIS<br><small>Detecting movement patterns...</small></div>
+  </div>
+</section>
+""", unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# LEFT COLUMN — Patient / worker inputs + both sensing modalities
+# OVERVIEW / FEATURE CARDS
 # ----------------------------------------------------------------------
-with col_left:
-    st.subheader(L["section1"])
-    st.markdown('<div class="ui-card"><div class="ui-kicker">Patient profile</div><strong>Enter basic clinical and occupational details</strong><br><span>These inputs contribute to the transparent screening score.</span></div>', unsafe_allow_html=True)
+st.markdown("""
+<section class="overview-section">
+  <div class="section-heading">
+    <div class="eyebrow">THE PLATFORM</div>
+    <h2>A Complete Risk Assessment Solution</h2>
+    <p>Combining computer vision, wearable sensors and clinical data for better insights.</p>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card reveal"><div class="feature-icon blue">◉</div><h3>Video Gait Analysis</h3><p>AI pose estimation from a short side-on walking video.</p></div>
+    <div class="feature-card reveal"><div class="feature-icon green">⌁</div><h3>Wearable IMU Analysis</h3><p>Motion-signal processing from ESP32 + MPU6050 data.</p></div>
+    <div class="feature-card reveal"><div class="feature-icon purple">▥</div><h3>Multimodal Assessment</h3><p>Clinical + gait + IMU information in one screening score.</p></div>
+    <div class="feature-card reveal"><div class="feature-icon teal">✓</div><h3>Community Healthcare</h3><p>Simple workflow designed for practical field screening.</p></div>
+  </div>
+</section>
+""", unsafe_allow_html=True)
 
-    patient_name = st.text_input("Patient name")
+# ----------------------------------------------------------------------
+# HOW IT WORKS
+# ----------------------------------------------------------------------
+st.markdown("""
+<section class="how-section" id="how-it-works">
+  <div class="section-heading">
+    <div class="eyebrow">SIMPLE WORKFLOW</div>
+    <h2>How It Works</h2>
+    <p>From movement data to meaningful screening insights.</p>
+  </div>
+  <div class="workflow">
+    <div class="workflow-item reveal"><div class="workflow-circle">👤</div><b>Patient Details</b><span>Basic clinical information</span></div>
+    <div class="workflow-arrow">→</div>
+    <div class="workflow-item reveal"><div class="workflow-circle">📷</div><b>Upload & Analyse</b><span>Video and IMU data</span></div>
+    <div class="workflow-arrow">→</div>
+    <div class="workflow-item reveal"><div class="workflow-circle">⚙️</div><b>AI Processing</b><span>Extract gait features</span></div>
+    <div class="workflow-arrow">→</div>
+    <div class="workflow-item reveal"><div class="workflow-circle">📈</div><b>Risk Assessment</b><span>Personalised result</span></div>
+  </div>
+</section>
+""", unsafe_allow_html=True)
+
+# ----------------------------------------------------------------------
+# SCREENING INPUTS
+# ----------------------------------------------------------------------
+st.markdown("""
+<section id="screening">
+  <div class="section-heading left">
+    <div class="eyebrow">START SCREENING</div>
+    <h2>Patient & Movement Data</h2>
+    <p>Enter the patient profile, then add camera and/or wearable sensor data.</p>
+  </div>
+</section>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="glass-section reveal"><div class="section-title">👤 Patient Details <small>Let’s start with some basic information</small></div>', unsafe_allow_html=True)
+
+p1, p2, p3 = st.columns([1.6, .8, .9])
+with p1:
+    patient_name = st.text_input("Patient name", placeholder="Enter patient name")
+with p2:
     age = st.number_input("Age", min_value=10, max_value=100, value=45)
-    height_cm = st.number_input("Height (cm)", min_value=100, max_value=220, value=160)
-    weight_kg = st.number_input("Weight (kg)", min_value=20, max_value=200, value=65)
-    bmi = weight_kg / ((height_cm / 100) ** 2)
-    st.metric("Calculated BMI", f"{bmi:.1f}")
+with p3:
+    gender = st.selectbox("Gender", ["Male", "Female", "Other", "Prefer not to say"])
 
+p4, p5, p6, p7 = st.columns(4)
+with p4:
+    height_cm = st.number_input("Height (cm)", min_value=100, max_value=220, value=160)
+with p5:
+    weight_kg = st.number_input("Weight (kg)", min_value=20, max_value=200, value=65)
+with p6:
     occupation = st.selectbox(
         "Primary occupation",
         [
@@ -322,23 +476,39 @@ with col_left:
             "Other",
         ],
     )
+with p7:
+    bmi = weight_kg / ((height_cm / 100) ** 2)
+    st.metric("Calculated BMI", f"{bmi:.1f}")
 
+p8, p9 = st.columns([1, 1])
+with p8:
     pain_months = st.slider("Joint pain duration (months, 0 = none)", 0, 60, 0)
+with p9:
     pain_severity = st.slider("Pain severity (0 = none, 10 = severe)", 0, 10, 0)
-    has_family_history = st.checkbox("Family history of OA / joint disease")
+has_family_history = st.checkbox("Family history of OA / joint disease")
 
-    # ---------------- Camera gait modality ----------------
-    st.subheader(L["section2"])
-    st.markdown('<div class="ui-card"><div class="ui-kicker">Computer vision</div><strong>Camera-based gait analysis</strong><br><span>Use a 5–15 second side-on, full-body walking video.</span></div>', unsafe_allow_html=True)
-    st.caption(
-        "Upload a short (5-15s) side-on, full-body walking video "
-        "(e.g. filmed walking across a room or corridor)."
+st.markdown('</div>', unsafe_allow_html=True)
+
+# ----------------------------------------------------------------------
+# VIDEO + IMU
+# ----------------------------------------------------------------------
+vcol, icol = st.columns(2)
+
+with vcol:
+    st.markdown('<div class="glass-section sensor-card reveal"><div class="section-title">📷 Camera Gait Analysis <small>AI pose estimation</small></div>', unsafe_allow_html=True)
+    st.caption("Upload a 5–15 second side-on, full-body walking video.")
+    video_file = st.file_uploader(
+        "Upload walking video",
+        type=["mp4", "mov", "avi"],
+        key="video_uploader",
     )
-    video_file = st.file_uploader("Upload video", type=["mp4", "mov", "avi"], key="video_uploader")
 
     if video_file is not None:
-        if st.button("Run camera gait analysis", type="primary"):
-            with st.spinner("Running pose estimation on video..."):
+        st.video(video_file)
+        st.caption("Preview • Side-on walking video")
+
+        if st.button("🏃 Run camera gait analysis", type="primary", use_container_width=True):
+            with st.spinner("AI is analysing movement patterns..."):
                 with tempfile.NamedTemporaryFile(
                     delete=False, suffix=os.path.splitext(video_file.name)[1]
                 ) as tmp:
@@ -355,34 +525,38 @@ with col_left:
 
     if st.session_state.gait_features:
         gf = st.session_state.gait_features
-        st.write("**Extracted camera gait features:**")
+        st.markdown('<div class="mini-result">', unsafe_allow_html=True)
         c1, c2, c3 = st.columns(3)
-        c1.metric("Left knee flexion range", f"{gf['knee_flexion_range_left']}°")
-        c2.metric("Right knee flexion range", f"{gf['knee_flexion_range_right']}°")
-        c3.metric("Asymmetry index", f"{gf['asymmetry_index']}%")
+        c1.metric("Left knee range", f"{gf['knee_flexion_range_left']}°")
+        c2.metric("Right knee range", f"{gf['knee_flexion_range_right']}°")
+        c3.metric("Asymmetry", f"{gf['asymmetry_index']}%")
+        st.markdown(
+            f"""<div class="signal-box">
+              <div class="signal-head"><b>Movement signal</b><span>● analysed</span></div>
+              <div class="signal-wave">〰〰〰〰〰〰〰〰〰〰〰〰〰</div>
+            </div>""",
+            unsafe_allow_html=True,
+        )
         st.caption(
             f"Cadence proxy: {gf['cadence_proxy']} steps/sec · "
-            f"Pose detected in {gf['pose_detection_rate']}% of frames "
-            f"({gf['frames_with_pose']}/{gf['frames_analyzed']})"
+            f"Pose detected in {gf['pose_detection_rate']}% of frames"
         )
-        if st.button("Clear camera gait data"):
-            st.session_state.gait_features = None
-            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    # ---------------- Wearable IMU modality ----------------
-    st.subheader(L["section3"])
-    st.markdown('<div class="ui-card"><div class="ui-kicker">Wearable sensing</div><strong>ESP32 + MPU6050 gait analysis</strong><br><span>Upload the recorded IMU CSV for sensor-based gait features.</span></div>', unsafe_allow_html=True)
-    st.caption(
-        "Upload the CSV log from the ESP32 + MPU6050 wearable sensor "
-        "(captured live via `tools/log_serial_to_csv.py`, or dumped from "
-        "onboard flash after offline field use). Columns: "
-        "timestamp_ms,leg,ax,ay,az,gx,gy,gz"
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with icol:
+    st.markdown('<div class="glass-section sensor-card reveal"><div class="section-title">📡 Wearable IMU Analysis <small>ESP32 + MPU6050</small></div>', unsafe_allow_html=True)
+    st.caption("Upload the recorded IMU CSV for sensor-based gait features.")
+    imu_file = st.file_uploader(
+        "Upload IMU data (CSV)",
+        type=["csv"],
+        key="imu_uploader",
     )
-    imu_file = st.file_uploader("Upload IMU CSV", type=["csv"], key="imu_uploader")
 
     if imu_file is not None:
-        if st.button("Run IMU gait analysis", type="primary"):
-            with st.spinner("Processing IMU trace..."):
+        if st.button("📊 Run IMU gait analysis", type="primary", use_container_width=True):
+            with st.spinner("Processing wearable motion signals..."):
                 with tempfile.NamedTemporaryFile(
                     delete=False, suffix=".csv", mode="wb"
                 ) as tmp:
@@ -391,105 +565,146 @@ with col_left:
                 try:
                     imu_feat = extract_imu_features(tmp_path)
                     st.session_state.imu_features = imu_feat.as_dict()
-                    st.success("IMU gait analysis complete.")
+                    st.success("IMU analysis complete.")
                 except Exception as e:
                     st.error(f"IMU analysis failed: {e}")
                 finally:
                     os.unlink(tmp_path)
 
+    st.markdown("""
+    <div class="imu-visual">
+      <div class="imu-chip">MPU6050</div>
+      <div class="imu-signal">
+        <span>↗</span><span>↘</span><span>↗</span><span>↘</span><span>↗</span><span>↘</span>
+      </div>
+      <small>3-axis motion signal • acceleration • gyroscope</small>
+    </div>
+    """, unsafe_allow_html=True)
+
     if st.session_state.imu_features:
         imf = st.session_state.imu_features
-        st.write("**Extracted IMU gait features:**")
+        st.markdown('<div class="mini-result">', unsafe_allow_html=True)
         c1, c2, c3 = st.columns(3)
         c1.metric("Peak angular velocity", f"{imf['peak_angular_velocity']}°/s")
-        c2.metric("Jerk (RMS)", f"{imf['jerk_rms']}")
+        c2.metric("Jerk RMS", f"{imf['jerk_rms']}")
         asym_display = (
             f"{imf['left_right_asymmetry']}%"
             if imf["left_right_asymmetry"] is not None
-            else "n/a (1 unit)"
+            else "n/a"
         )
         c3.metric("L/R asymmetry", asym_display)
         st.caption(
-            f"Cadence (IMU): {imf['cadence_imu']} steps/sec · "
+            f"Cadence: {imf['cadence_imu']} steps/sec · "
             f"Samples — left: {imf['samples_left']}, right: {imf['samples_right']}"
         )
-        if st.button("Clear IMU data"):
-            st.session_state.imu_features = None
-            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# RIGHT COLUMN — Risk score output
+# RISK RESULT
 # ----------------------------------------------------------------------
-with col_right:
-    st.subheader(L["section4"])
-    st.markdown('<div class="ui-card"><div class="ui-kicker">Clinical decision support</div><strong>Composite OA risk assessment</strong><br><span>Combines available patient, camera and wearable inputs. This is not a diagnosis.</span></div>', unsafe_allow_html=True)
+result = compute_risk(
+    age=age,
+    bmi=bmi,
+    occupation=occupation,
+    pain_months=pain_months,
+    pain_severity=pain_severity,
+    has_family_history=has_family_history,
+    gait_features=st.session_state.gait_features,
+    imu_features=st.session_state.imu_features,
+)
 
-    if patient_name:
-        st.caption(f"Patient: **{patient_name}**")
+modalities_used = []
+if st.session_state.gait_features:
+    modalities_used.append("camera gait")
+if st.session_state.imu_features:
+    modalities_used.append("wearable IMU")
 
-    result = compute_risk(
-        age=age,
-        bmi=bmi,
-        occupation=occupation,
-        pain_months=pain_months,
-        pain_severity=pain_severity,
-        has_family_history=has_family_history,
-        gait_features=st.session_state.gait_features,
-        imu_features=st.session_state.imu_features,
-    )
+band_meta = {
+    "Low": ("#16a34a", "Low Risk", "Routine monitoring — no immediate referral needed.", "✓"),
+    "Moderate": ("#f59e0b", "Moderate Risk", "Consider lifestyle modification and re-screening / clinical follow-up.", "!"),
+    "High": ("#ef4444", "High Risk", "Refer to PHC / orthopedic professional for clinical evaluation.", "!"),
+}
+risk_color, risk_title, risk_text, risk_icon = band_meta[result.band]
 
-    band_color = {"Low": "green", "Moderate": "orange", "High": "red"}[result.band]
+st.markdown('<div id="results"></div>', unsafe_allow_html=True)
+st.markdown("""
+<div class="section-heading left results-heading">
+  <div class="eyebrow">AI SCREENING OUTPUT</div>
+  <h2>Risk Assessment</h2>
+  <p>Your multimodal screening result is shown below.</p>
+</div>
+""", unsafe_allow_html=True)
 
+score = max(0, min(float(result.score), 100.0))
+st.markdown(f"""
+<div class="risk-dashboard reveal">
+  <div class="risk-main">
+    <div class="risk-gauge" style="--score:{score}%; --risk:{risk_color};">
+      <div class="gauge-inner">
+        <strong>{score:.0f}</strong>
+        <span>/ 100</span>
+      </div>
+    </div>
+    <div class="risk-label" style="color:{risk_color};">{risk_icon} {risk_title}</div>
+    <p>{risk_text}</p>
+  </div>
+  <div class="factor-panel">
+    <h3>Contributing Factors</h3>
+""", unsafe_allow_html=True)
+
+for label, pts in result.contributing_factors:
+    pct = max(4, min(100, float(pts) * 5))
     st.markdown(
-        f"<h1 style='color:{band_color};'>{result.band} Risk</h1>",
+        f"""<div class="factor-row">
+          <div><span>{label}</span><b>+{pts:.1f}</b></div>
+          <div class="factor-track"><i style="width:{pct}%;"></i></div>
+        </div>""",
         unsafe_allow_html=True,
     )
-    st.progress(min(int(result.score), 100) / 100)
-    st.metric("Composite risk score", f"{result.score} / 100")
 
-    modalities_used = []
-    if st.session_state.gait_features:
-        modalities_used.append("camera gait")
-    if st.session_state.imu_features:
-        modalities_used.append("wearable IMU")
+st.markdown("</div><div class=\"recommend-panel\"><h3>💡 Recommendations</h3>", unsafe_allow_html=True)
 
-    if not modalities_used:
-        st.info(
-            "No sensor data yet — score is based on demographic/clinical "
-            "inputs only. Add a gait video and/or IMU sensor log for a "
-            "more complete, multi-modal assessment."
-        )
-    elif len(modalities_used) == 1:
-        st.info(
-            f"Score currently uses **{modalities_used[0]}** data only. "
-            f"Add the other sensing modality for a stronger fused assessment."
-        )
-    else:
-        st.success("Score fuses **both** camera gait and wearable IMU data.")
+if result.band == "High":
+    recommendations = [
+        "PHC / orthopedic clinical evaluation",
+        "Physical examination and imaging if advised",
+        "Follow local referral pathway",
+    ]
+elif result.band == "Moderate":
+    recommendations = [
+        "Maintain a healthy body weight",
+        "Regular low-impact exercise",
+        "Consult a healthcare professional if symptoms persist",
+        "Periodic re-screening",
+    ]
+else:
+    recommendations = [
+        "Continue routine activity",
+        "Maintain healthy weight",
+        "Monitor symptoms",
+        "Periodic re-screening",
+    ]
 
-    st.write("**Contributing factors:**")
-    for label, pts in result.contributing_factors:
-        st.write(f"- {label}: **+{pts:.1f} pts**")
+for item in recommendations:
+    st.markdown(f'<div class="recommend-item">✓ {item}</div>', unsafe_allow_html=True)
 
-    st.divider()
+st.markdown("</div></div>", unsafe_allow_html=True)
 
-    if result.band == "High":
-        st.error(
-            "Recommendation: Refer to PHC / orthopedic professional for "
-            "clinical evaluation (X-ray / physical exam)."
-        )
-    elif result.band == "Moderate":
-        st.warning(
-            "Recommendation: Advise lifestyle modification (weight management, "
-            "joint-friendly exercise) and re-screen in 6 months."
-        )
-    else:
-        st.success("Recommendation: Routine monitoring — no immediate referral needed.")
+if not modalities_used:
+    st.info("Add camera gait and/or wearable IMU data for a more complete multimodal assessment.")
+elif len(modalities_used) == 1:
+    st.warning(f"Current score uses **{modalities_used[0]}** plus clinical inputs. Add the other modality for a fuller assessment.")
+else:
+    st.success("✓ Score currently fuses **camera gait + wearable IMU + clinical inputs**.")
 
-    st.divider()
-
-    # ---------------- Save patient record ----------------
-    if st.button("💾 Save patient record", type="primary"):
+# ----------------------------------------------------------------------
+# SAVE RECORD
+# ----------------------------------------------------------------------
+save_col, note_col = st.columns([1, 2])
+with save_col:
+    if st.button("💾 Save patient record", type="primary", use_container_width=True):
         if not patient_name:
             st.warning("Please enter a patient name before saving.")
         else:
@@ -509,16 +724,63 @@ with col_right:
                 "risk_band": result.band,
             }
             save_patient_record(record)
-            st.success(f"Record saved for **{patient_name}**.")
+            st.success(f"Record saved for {patient_name}.")
 
-st.divider()
-st.markdown('<div class="oa-footer">🦵 OA Risk Screening • SIH26004 prototype • Screening support, not diagnosis</div>', unsafe_allow_html=True)
-st.caption(
-    "⚠️ Prototype for demonstration purposes only. Risk scoring uses a "
-    "transparent, literature-informed weighted-points model (not a trained "
-    "classifier) since no labeled NER-population dataset yet exists. "
-    "Designed to be swapped for a trained ML model (e.g. on OAI/MOST + "
-    "locally collected pilot data) without changing the interface. "
-    "Digital patient records and secure sync/analytics dashboard are "
-    "roadmap items beyond this prototype's scope."
-)
+with note_col:
+    st.markdown("""
+    <div class="prototype-note">
+      <b>⚠️ Screening support, not diagnosis</b><br>
+      This prototype flags candidates for PHC-level follow-up. The current
+      score is a transparent weighted-points model and should not replace
+      clinical judgement.
+    </div>
+    """, unsafe_allow_html=True)
+
+# ----------------------------------------------------------------------
+# PROCESS BANNER
+# ----------------------------------------------------------------------
+st.markdown("""
+<div class="journey-banner reveal">
+  <div class="journey-title">From Movement Data to Better Lives</div>
+  <div class="journey-sub">Early detection • stronger generations</div>
+  <div class="journey-row">
+    <div><span>👤</span><b>Patient</b><small>Community screening</small></div>
+    <i>→</i>
+    <div><span>📷</span><b>Video Analysis</b><small>AI pose estimation</small></div>
+    <i>→</i>
+    <div><span>〰</span><b>IMU Analysis</b><small>Motion signals</small></div>
+    <i>→</i>
+    <div><span>🧠</span><b>Fusion Engine</b><small>Multimodal AI</small></div>
+    <i>→</i>
+    <div><span>📈</span><b>Risk Assessment</b><small>Personalised result</small></div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+# ----------------------------------------------------------------------
+# FOOTER
+# ----------------------------------------------------------------------
+st.markdown("""
+<div id="contact" class="footer-wrap">
+  <div class="footer-brand">
+    <div class="footer-logo">🌿 <b>Tyros</b></div>
+    <small>AI for a Healthier Northeast</small>
+  </div>
+  <div class="footer-contact">
+    <h4>Contact Us</h4>
+    <div>✉️ tyros2026@gmail.com</div>
+    <div>☎️ 7979824251</div>
+    <div>📍 GEC Vaishali</div>
+  </div>
+  <div class="footer-social">
+    <h4>Follow Us</h4>
+    <div class="social-row">
+      <span title="Instagram">◎</span>
+      <span title="X / Twitter">𝕏</span>
+      <span title="Facebook">f</span>
+    </div>
+  </div>
+  <div class="footer-tag">Made with ❤️<br>for a Healthier Tomorrow</div>
+</div>
+<div class="copyright">© 2026 Tyros. All rights reserved. • Prototype for demonstration</div>
+""", unsafe_allow_html=True)
