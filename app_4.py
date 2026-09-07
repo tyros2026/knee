@@ -226,7 +226,7 @@ div[data-testid="stMetricValue"] { color:var(--ink);font-family:'Space Grotesk';
 .footer-wrap { margin-top:3rem;padding:2.1rem 1.6rem;background:#102f4d;border-radius:24px;color:#dcebf7;display:grid;grid-template-columns:1.3fr 1.3fr .8fr 1fr;gap:2rem;align-items:center; }
 .footer-logo { font:700 1.3rem 'Space Grotesk';color:#fff; }
 .footer-brand small { color:#91aec4;font-size:.72rem; }
-.footer-wrap h4 { margin:0 0 .6rem;text-transform:uppercase;letter-spacing:.08em;color:#ff4d4d;font-size:.72rem; }
+.footer-wrap h4 { margin:0 0 .6rem;text-transform:uppercase;letter-spacing:.08em;color:#ff4d4d!important;font-size:.72rem; }
 .footer-contact div { font-size:.78rem;margin:.35rem 0; }
 .social-row { display:flex;gap:.5rem; }
 .social-row span { width:34px;height:34px;border-radius:10px;background:#193e5e;border:1px solid #2a5373;display:grid;place-items:center;font-weight:800;font-size:1.1rem;color:white; }
@@ -263,7 +263,7 @@ div[data-testid="stMetricValue"] { color:var(--ink);font-family:'Space Grotesk';
 # ----------------------------------------------------------------------
 LABELS = {
     "English": {
-        "title": "🦵 AI-Assisted Early OA Risk Screening",
+        "title": "AI-Assisted Early OA Risk Screening",
         "subtitle": (
             "Prototype hardware-anchored community screening tool for the "
             "North Eastern Region. This is a **screening/triage aid**, not "
@@ -276,7 +276,7 @@ LABELS = {
         "section4": "4. Risk assessment",
     },
     "অসমীয়া (Assamese)": {
-        "title": "🦵 এআই-সহায়ক প্ৰাথমিক অষ্টিঅ'আৰ্থ্ৰাইটিছ স্ক্ৰীনিং",
+        "title": "এআই-সহায়ক প্ৰাথমিক অষ্টিঅ'আৰ্থ্ৰাইটিছ স্ক্ৰীনিং",
         "subtitle": (
             "উত্তৰ পূৰ্বাঞ্চলৰ বাবে সমাজ পৰ্যায়ৰ স্ক্ৰীনিং প্ৰটোটাইপ। এইটো "
             "এটা **স্ক্ৰীনিং সহায়ক সঁজুলি**, ৰোগ নিৰ্ণয় নহয় — উচ্চ বিপদজনক "
@@ -288,7 +288,7 @@ LABELS = {
         "section4": "৪. বিপদ মূল্যাংকন",
     },
     "हिन्दी (Hindi)": {
-        "title": "🦵 एआई-सहायक प्रारंभिक ओए (ऑस्टियोआर्थराइटिस) जोखिम जांच",
+        "title": "एआई-सहायक प्रारंभिक ओए (ऑस्टियोआर्थराइटिस) जोखिम जांच",
         "subtitle": (
             "पूर्वोत्तर क्षेत्र के लिए हार्डवेयर-आधारित सामुदायिक जांच "
             "प्रोटोटाइप। यह एक **जांच/ट्राइएज सहायता** है, निदान नहीं — "
@@ -382,6 +382,7 @@ st.markdown(f"""
     <div class="orbit orbit-b"></div>
     <div class="scan-line"></div>
     <div class="knee-pulse">●</div>
+    <div class="person-art">🚶</div>
     <div class="visual-label">AI ANALYSIS<br><small>Detecting movement patterns...</small></div>
   </div>
 </section>
