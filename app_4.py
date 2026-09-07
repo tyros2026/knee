@@ -52,6 +52,160 @@ st.set_page_config(
 )
 
 # ----------------------------------------------------------------------
+# UI styling — presentation only; screening logic and data flow are unchanged.
+# ----------------------------------------------------------------------
+st.markdown(
+    """
+    <style>
+    /* App background and typography */
+    .stApp {
+        background: linear-gradient(180deg, #f7fafc 0%, #eef5f3 100%);
+    }
+    .block-container {
+        max-width: 1450px;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    /* Sidebar */
+    section[data-testid="stSidebar"] {
+        background: #ffffff;
+        border-right: 1px solid #e2e8f0;
+    }
+    section[data-testid="stSidebar"] .block-container {
+        padding-top: 1.5rem;
+    }
+
+    /* Main hero */
+    .oa-hero {
+        background: linear-gradient(135deg, #0f766e 0%, #115e59 55%, #134e4a 100%);
+        padding: 1.6rem 1.8rem;
+        border-radius: 22px;
+        margin-bottom: 1.25rem;
+        box-shadow: 0 12px 30px rgba(15, 118, 110, 0.16);
+    }
+    .oa-hero h1 {
+        color: white !important;
+        margin: 0 0 .35rem 0;
+        font-size: 2rem;
+        letter-spacing: -0.02em;
+    }
+    .oa-hero p {
+        color: rgba(255,255,255,.88);
+        margin: 0;
+        font-size: .98rem;
+    }
+    .oa-badge {
+        display: inline-block;
+        padding: .28rem .65rem;
+        border-radius: 999px;
+        background: rgba(255,255,255,.14);
+        border: 1px solid rgba(255,255,255,.22);
+        color: white;
+        font-size: .78rem;
+        font-weight: 700;
+        margin-bottom: .7rem;
+    }
+
+    /* Section labels */
+    div[data-testid="stVerticalBlock"] h2,
+    div[data-testid="stVerticalBlock"] h3 {
+        color: #123b3a;
+    }
+
+    /* Inputs / uploaders */
+    div[data-baseweb="input"] > div,
+    div[data-baseweb="select"] > div {
+        border-radius: 10px;
+        border-color: #d7e2e0;
+        background: #fff;
+    }
+    div[data-testid="stFileUploaderDropzone"] {
+        border: 1.5px dashed #9bbab5;
+        border-radius: 14px;
+        background: #fbfefd;
+    }
+
+    /* Buttons */
+    .stButton > button,
+    .stDownloadButton > button {
+        border-radius: 10px;
+        font-weight: 650;
+        min-height: 2.55rem;
+        transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .stButton > button:hover,
+    .stDownloadButton > button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(15, 118, 110, .12);
+    }
+
+    /* Metrics */
+    div[data-testid="stMetric"] {
+        background: #ffffff;
+        border: 1px solid #e1ebe9;
+        border-radius: 14px;
+        padding: .75rem .9rem;
+        box-shadow: 0 5px 16px rgba(15, 23, 42, .04);
+    }
+    div[data-testid="stMetricLabel"] {
+        color: #5b6b69;
+    }
+
+    /* Alerts / notices */
+    div[data-testid="stAlert"] {
+        border-radius: 12px;
+    }
+
+    /* Dataframe */
+    div[data-testid="stDataFrame"] {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    /* Small helper cards */
+    .ui-card {
+        background: rgba(255,255,255,.82);
+        border: 1px solid #dfeae8;
+        border-radius: 16px;
+        padding: .85rem 1rem;
+        margin: .35rem 0 .8rem 0;
+        color: #36504d;
+    }
+    .ui-card strong { color: #123b3a; }
+    .ui-kicker {
+        font-size: .75rem;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        font-weight: 800;
+        color: #0f766e;
+        margin-bottom: .2rem;
+    }
+
+    /* Footer */
+    .oa-footer {
+        text-align: center;
+        color: #6b7c79;
+        font-size: .78rem;
+        padding: .8rem 0 0;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown(
+    """
+    <div class="oa-hero">
+        <div class="oa-badge">NER • COMMUNITY SCREENING • PROTOTYPE</div>
+        <h1>🦵 OA Risk Screening</h1>
+        <p>AI-assisted, multimodal screening support for early osteoarthritis risk assessment.</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+# ----------------------------------------------------------------------
 # Minimal multilingual label set (PS requirement: "multilingual and
 # easy-to-use interfaces suitable for rural healthcare settings in NER").
 # v1 covers English + Assamese + Hindi as a demonstration of the pattern;
@@ -145,6 +299,7 @@ col_left, col_right = st.columns([1, 1])
 # ----------------------------------------------------------------------
 with col_left:
     st.subheader(L["section1"])
+    st.markdown('<div class="ui-card"><div class="ui-kicker">Patient profile</div><strong>Enter basic clinical and occupational details</strong><br><span>These inputs contribute to the transparent screening score.</span></div>', unsafe_allow_html=True)
 
     patient_name = st.text_input("Patient name")
     age = st.number_input("Age", min_value=10, max_value=100, value=45)
@@ -174,6 +329,7 @@ with col_left:
 
     # ---------------- Camera gait modality ----------------
     st.subheader(L["section2"])
+    st.markdown('<div class="ui-card"><div class="ui-kicker">Computer vision</div><strong>Camera-based gait analysis</strong><br><span>Use a 5–15 second side-on, full-body walking video.</span></div>', unsafe_allow_html=True)
     st.caption(
         "Upload a short (5-15s) side-on, full-body walking video "
         "(e.g. filmed walking across a room or corridor)."
@@ -215,6 +371,7 @@ with col_left:
 
     # ---------------- Wearable IMU modality ----------------
     st.subheader(L["section3"])
+    st.markdown('<div class="ui-card"><div class="ui-kicker">Wearable sensing</div><strong>ESP32 + MPU6050 gait analysis</strong><br><span>Upload the recorded IMU CSV for sensor-based gait features.</span></div>', unsafe_allow_html=True)
     st.caption(
         "Upload the CSV log from the ESP32 + MPU6050 wearable sensor "
         "(captured live via `tools/log_serial_to_csv.py`, or dumped from "
@@ -265,6 +422,7 @@ with col_left:
 # ----------------------------------------------------------------------
 with col_right:
     st.subheader(L["section4"])
+    st.markdown('<div class="ui-card"><div class="ui-kicker">Clinical decision support</div><strong>Composite OA risk assessment</strong><br><span>Combines available patient, camera and wearable inputs. This is not a diagnosis.</span></div>', unsafe_allow_html=True)
 
     if patient_name:
         st.caption(f"Patient: **{patient_name}**")
@@ -354,6 +512,7 @@ with col_right:
             st.success(f"Record saved for **{patient_name}**.")
 
 st.divider()
+st.markdown('<div class="oa-footer">🦵 OA Risk Screening • SIH26004 prototype • Screening support, not diagnosis</div>', unsafe_allow_html=True)
 st.caption(
     "⚠️ Prototype for demonstration purposes only. Risk scoring uses a "
     "transparent, literature-informed weighted-points model (not a trained "
